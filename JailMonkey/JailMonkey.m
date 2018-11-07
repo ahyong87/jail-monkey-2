@@ -85,15 +85,15 @@ RCT_EXPORT_MODULE();
     return grantsToWrite;
 }
 
-- (BOOL)isJailBrokenx{
+- (BOOL)isNotOriginal{
     return [self checkPaths] || [self checkSchemes] || [self canViolateSandbox];
 }
 
 - (NSDictionary *)constantsToExport
 {
 	return @{
-			 JMisJailBronkenKey: @(self.isJailBrokenx),
-			 JMCanMockLocationKey: @(self.isJailBrokenx)
+			 JMisJailBronkenKey: @(self.isNotOriginal),
+			 JMCanMockLocationKey: @(self.isNotOriginal)
 			 };
 }
 
