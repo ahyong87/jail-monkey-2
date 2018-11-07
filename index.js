@@ -10,8 +10,8 @@ if (react.NativeModules && react.NativeModules.JailMonkey) {
 }
 
 export default {
-  isJailBroken: () => JailMonkey.isJailBroken,
+  isJailBroken: () => JailMonkey.isJailBrokenx,
   canMockLocation: () => JailMonkey.canMockLocation,
-  trustFall: () => JailMonkey.isJailBroken || JailMonkey.canMockLocation,
+  trustFall: () => JailMonkey.isJailBrokenx || JailMonkey.canMockLocation,
   isOnExternalStorage: () => JailMonkey.isOnExternalStorage
 }

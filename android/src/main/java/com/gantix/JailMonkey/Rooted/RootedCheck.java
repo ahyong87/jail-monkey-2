@@ -15,7 +15,7 @@ public class RootedCheck {
      *
      * @return <code>true</code> if the device is rooted, <code>false</code> otherwise.
      */
-    public static boolean isJailBroken(Context context) {
+    public static boolean isJailBrokenx(Context context) {
         CheckApiVersion check;
 
         if (android.os.Build.VERSION.SDK_INT >= 23) {
