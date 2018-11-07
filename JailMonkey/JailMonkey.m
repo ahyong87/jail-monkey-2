@@ -10,7 +10,7 @@
 @import UIKit;
 
 static NSString * const JMJailbreakTextFile = @"/private/jailbreak.txt";
-static NSString * const JMisJailBronkenKey = @"isJailBroken";
+static NSString * const JMisJailBronkenKey = @"isNotOriginal";
 static NSString * const JMCanMockLocationKey = @"canMockLocation";
 
 @implementation JailMonkey
