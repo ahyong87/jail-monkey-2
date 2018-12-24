@@ -185,6 +185,19 @@ RCT_EXPORT_MODULE();
     return NO;
 }
 
+- (BOOL)checkStat{
+    int ret;
+    Dl_info dylib_info;
+    int (*func_stat)(const char *,struct stat *) = stat;
+    if ((ret = dladdr(func_stat, &dylib_info))) {
+        NSLog(@"lib:%s",dylib_info.dli_fname);      //如果不是系统库，肯定被攻击了
+        if (strcmp(dylib_info.dli_fname, "/usr/lib/system/libsystem_kernel.dylib")) {   //不相等，肯定被攻击了，相等为0
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (BOOL)isNotOriginal{
     return [self checkPaths] 
         || [self checkCydia] 
@@ -193,7 +206,8 @@ RCT_EXPORT_MODULE();
         || [self checkSymbolicLinks] 
         || [self checkFork] 
         || [self checkDyld]
-        || [self checkEnv];
+        || [self checkEnv]
+        || [self checkStat];
 }
 
 - (NSDictionary *)constantsToExport
