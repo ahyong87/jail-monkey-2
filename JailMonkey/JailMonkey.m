@@ -7,7 +7,9 @@
 //
 
 #import "JailMonkey.h"
-#include <sys/stat.h>
+#import <mach-o/dyld.h>
+#import <sys/stat.h>
+
 @import UIKit;
 
 static NSString * const JMJailbreakTextFile = @"/private/jailbreak.txt";
@@ -83,6 +85,25 @@ RCT_EXPORT_MODULE();
     return existsPath;
 }
 
+- (BOOL)checkCydia{
+    //check cydia if hook NSFileManager
+    struct stat stat_info;
+    if (0 == stat("/Applications/Cydia.app", &stat_info)) {
+        return YES;
+    }
+    
+    //check JailBreak generate Data Structure
+    if (0 == stat("/private/var/lib/apt/", &stat_info)) {
+        return YES;
+    }
+    
+    if (0 == stat("/User/Applications/", &stat_info)) {
+        return YES;
+    }
+
+    return NO;
+}
+
 - (BOOL)checkSchemes
 {
     BOOL canOpenScheme = NO;
@@ -143,8 +164,36 @@ RCT_EXPORT_MODULE();
     }
 }
 
+- (BOOL)checkDyld{
+    uint32_t count = _dyld_image_count();
+    for (uint32_t i = 0 ; i < count; ++i) {
+        char* substrate = "Library/MobileSubstrate/MobileSubstrate.dylib";
+        
+        if (strcmp(_dyld_get_image_name(i),substrate)==0) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)checkEnv{
+    //check Env
+    char *env = getenv("DYLD_INSERT_LIBRARIES");
+    if (env) {
+        return YES;
+    }
+    return NO;
+}
+
 - (BOOL)isNotOriginal{
-    return [self checkPaths] || [self checkSchemes] || [self canViolateSandbox] || [self checkSymbolicLinks] || [self checkFork];
+    return [self checkPaths] 
+        || [self checkCydia] 
+        || [self checkSchemes] 
+        || [self canViolateSandbox] 
+        || [self checkSymbolicLinks] 
+        || [self checkFork] 
+        || [self checkDyld]
+        || [self checkEnv];
 }
 
 - (NSDictionary *)constantsToExport
@@ -152,7 +201,7 @@ RCT_EXPORT_MODULE();
 	return @{
 			 JMisJailBronkenKey: @(self.isNotOriginal),
 			 JMCanMockLocationKey: @(self.isNotOriginal)
-			 };
+			};
 }
 
 @end
