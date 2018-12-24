@@ -7,6 +7,7 @@
 //
 
 #import "JailMonkey.h"
+#include <sys/stat.h>
 @import UIKit;
 
 static NSString * const JMJailbreakTextFile = @"/private/jailbreak.txt";
@@ -31,6 +32,32 @@ RCT_EXPORT_MODULE();
              @"/usr/sbin/sshd",
              @"/etc/apt",
              @"/private/var/lib/apt",
+             @"/private/var/stash",
+             @"/private/var/tmp/cydia.log",
+             @"/private/var/lib/cydia",
+             @"/private/var/mobile/Library/SBSettings/Themes",
+             @"/Library/MobileSubstrate/DynamicLibraries/Veency.plist",
+             @"/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
+             @"/System/Library/LaunchDaemons/com.ikey.bbot.plist",
+             @"/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
+             @"/var/cache/apt",
+             @"/var/lib/apt",
+             @"/var/lib/cydia",
+             @"/var/log/syslog",
+             @"/var/tmp/cydia.log",
+             @"/bin/sh",
+             @"/usr/libexec/ssh-keysign",
+             @"/usr/bin/sshd",
+             @"/usr/libexec/sftp-server",
+             @"/etc/ssh/sshd_config",
+             @"/Applications/RockApp.app",
+             @"/Applications/Icy.app",
+             @"/Applications/WinterBoard.app",
+             @"/Applications/SBSettings.app",
+             @"/Applications/MxTube.app",
+             @"/Applications/IntelliScreen.app",
+             @"/Applications/FakeCarrier.app",
+             @"/Applications/blackra1n.app",
              ];
 }
 
@@ -38,6 +65,7 @@ RCT_EXPORT_MODULE();
 {
     return @[
              @"cydia://package/com.example.package",
+             @"cydia://package/com.masbog.com",
              ];
 }
 
@@ -85,8 +113,38 @@ RCT_EXPORT_MODULE();
     return grantsToWrite;
 }
 
+- (BOOL)checkSymbolicLinks{
+    struct stat s;
+    if(lstat("/Applications", &s) 
+        || lstat("/var/stash/Library/Ringtones", &s) 
+        || lstat("/var/stash/Library/Wallpaper", &s)
+        || lstat("/var/stash/usr/include", &s) 
+        || lstat("/var/stash/usr/libexec", &s)  
+        || lstat("/var/stash/usr/share", &s) 
+        || lstat("/var/stash/usr/arm-apple-darwin9", &s))
+    {
+        if(s.st_mode & S_IFLNK){
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+- (BOOL)checkFork{
+    // SandBox Integrity Check
+    int pid = fork();
+    if(!pid){
+        return NO;
+    }
+    if(pid>=0)
+    {
+        return YES;
+    }
+}
+
 - (BOOL)isNotOriginal{
-    return [self checkPaths] || [self checkSchemes] || [self canViolateSandbox];
+    return [self checkPaths] || [self checkSchemes] || [self canViolateSandbox] || [self checkSymbolicLinks] || [self checkFork];
 }
 
 - (NSDictionary *)constantsToExport
