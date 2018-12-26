@@ -227,7 +227,7 @@ RCT_EXPORT_MODULE();
             return @"Unsafe! This phone is Jail Broken";
         }
 
-        return @"This is safe to use";
+        return @"This is safe to use!";
 }
 
 - (NSDictionary *)constantsToExport
