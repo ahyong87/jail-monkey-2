@@ -230,11 +230,15 @@ RCT_EXPORT_MODULE();
         return @"This is safe to use!";
 }
 
+- (BOOL)canMockLocation{
+    return false;
+}
+
 - (NSDictionary *)constantsToExport
 {
 	return @{
 			 JMisJailBronkenKey: @(self.isNotOriginal),
-			 JMCanMockLocationKey: @(self.isNotOriginal)
+			 JMCanMockLocationKey: @(self.canMockLocation)
 			};
 }
 
