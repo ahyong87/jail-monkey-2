@@ -224,7 +224,7 @@ RCT_EXPORT_MODULE();
         || [self checkDyld]
         || [self checkEnv]
         || [self checkStat]) {
-            return @"Unsafe! This RM App is Jail Broken";
+            return @"Unsafe! This phone is Jail Broken";
         }
 
         return @"This is safe to use";
