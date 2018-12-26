@@ -91,6 +91,10 @@ RCT_EXPORT_MODULE();
     if (0 == stat("/Applications/Cydia.app", &stat_info)) {
         return YES;
     }
+
+    if (0 == stat("/Library/MobileSubstrate/MobileSubstrate.dylib", &stat_info)) {
+        return YES;
+    }
     
     //check JailBreak generate Data Structure
     if (0 == stat("/private/var/lib/apt/", &stat_info)) {
@@ -198,8 +202,20 @@ RCT_EXPORT_MODULE();
     return NO;
 }
 
-- (BOOL)isNotOriginal{
-    return [self checkPaths] 
+// - (BOOL)isNotOriginal{
+//     return [self checkPaths] 
+//         || [self checkCydia] 
+//         || [self checkSchemes] 
+//         || [self canViolateSandbox] 
+//         || [self checkSymbolicLinks] 
+//         || [self checkFork] 
+//         || [self checkDyld]
+//         || [self checkEnv]
+//         || [self checkStat];
+// }
+
+- (NSString *)isNotOriginal{
+    if ([self checkPaths] 
         || [self checkCydia] 
         || [self checkSchemes] 
         || [self canViolateSandbox] 
@@ -207,7 +223,11 @@ RCT_EXPORT_MODULE();
         || [self checkFork] 
         || [self checkDyld]
         || [self checkEnv]
-        || [self checkStat];
+        || [self checkStat]) {
+            return @"Unsafe! This RM App is Jail Broken";
+        }
+
+        return @"This is safe to use";
 }
 
 - (NSDictionary *)constantsToExport
