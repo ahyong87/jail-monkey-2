@@ -167,6 +167,8 @@ RCT_EXPORT_MODULE();
     {
         return YES;
     }
+
+    return NO;
 }
 
 - (BOOL)checkDyld{
