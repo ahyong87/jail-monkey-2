@@ -242,8 +242,8 @@ RCT_EXPORT_MODULE();
 - (NSDictionary *)constantsToExport
 {
 	return @{
-			 JMisJailBronkenKey: @(self.isNotOriginal),
-			 JMCanMockLocationKey: @(self.canMockLocation)
+			 JMisJailBronkenKey: self.isNotOriginal,
+			 JMCanMockLocationKey: self.canMockLocation
 			};
 }
 
