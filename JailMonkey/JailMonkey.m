@@ -9,6 +9,7 @@
 #import "JailMonkey.h"
 #import <mach-o/dyld.h>
 #import <sys/stat.h>
+#import <dlfcn.h>
 
 @import UIKit;
 
@@ -97,11 +98,11 @@ RCT_EXPORT_MODULE();
     }
     
     //check JailBreak generate Data Structure
-    if (0 == stat("/private/var/lib/apt/", &stat_info)) {
+    if (0 == stat("/var/lib/cydia/", &stat_info)) {
         return YES;
     }
     
-    if (0 == stat("/User/Applications/", &stat_info)) {
+    if (0 == stat("/var/cache/apt", &stat_info)) {
         return YES;
     }
 
@@ -183,7 +184,7 @@ RCT_EXPORT_MODULE();
 - (BOOL)checkEnv{
     //check Env
     char *env = getenv("DYLD_INSERT_LIBRARIES");
-    if (env) {
+    if (env != NULL) {
         return YES;
     }
     return NO;
@@ -230,8 +231,12 @@ RCT_EXPORT_MODULE();
         return @"This is safe to use!";
 }
 
-- (BOOL)canMockLocation{
-    return false;
+// - (BOOL)canMockLocation{
+//     return false;
+// }
+
+- (NSString *)canMockLocation{
+    return @"false";
 }
 
 - (NSDictionary *)constantsToExport
